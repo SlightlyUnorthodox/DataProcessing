@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CIS 4930/6930 Data Processing</title>
+  <meta charset="utf-8">
+  <meta name="description" content="CIS 4930/6930 Data Processing">
+  <meta name="author" content="Dax Gerts">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>CIS 4930/6930 Data Processing</h1>
+    <h2>Google Ngrams Analysis</h2>
+    <p>Dax Gerts<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Google Ngrams Dataset (1)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>The data used was divided into <strong>1-gram</strong> and <strong>2-gram</strong> datasets, both of which was provided by Google Books in July 2009. The data was in the form of ngrams, which are linguistic tools which allow for large-scale frequency analysis.</p>
+
+<p>Variables:</p>
+
+<ul>
+<li>Word1</li>
+<li>Word2 (2-gram data only)</li>
+<li>Year</li>
+<li>Count</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Google Ngrams Dataset (2)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="C:/Users/Dax/Dropbox/DataProcessing/ngramViewer.png" style="width:800px;height800px"></p>
+
+<p>More information can be found <a href="http://storage.googleapis.com/books/ngrams/books/datasetsv2.html">here</a></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Benchmarking (1)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>The following are a series of benchmarking tests which were run to establish base processing times for the <strong>1-gram</strong> and <strong>2-gram</strong> datasets.</p>
+
+<p><strong>1-Gram Tuple Count: (Read)</strong></p>
+
+<pre><code class="r"># Title: TupleCount1
+# Author: Dax Gerts
+# Date: 13 November 2015
+# Runtime: 8.218 seconds
+# Results: 1,430,731,493 tuples
+
+require(gtBase)
+
+data = Read(ngrams1)
+result = Count(data)
+View(result)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Benchmarking (2)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><strong>1-Gram Word Count: (Read + Aggregate Sum)</strong></p>
+
+<pre><code class="r"># Title: WordCount1
+# Author: Dax Gerts
+# Date: 13 November 2015
+# Runtime: 8.947 seconds
+# Results: 1,320,305,357,364 words
+
+require(gtBase)
+
+data = Read(ngrams1)
+result = Sum(Count,data = data)
+View(result)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Benchmarking (3)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><strong>2-Gram Tuple Count: (Read)</strong></p>
+
+<pre><code class="r"># Title: TupleCount2
+# Author: Dax Gerts
+# Date: 13 November 2015
+# Runtime: 16.481 seconds
+# Results: 37,582,158,107 tuples
+
+require(gtBase)
+
+data = Read(ngrams2)
+result = Count(data)
+View(result)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Benchmarking (4)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><strong>2-Gram Word Count: (Read + Aggregate Sum)</strong></p>
+
+<pre><code class="r"># Title: WordCount2
+# Author: Dax Gerts
+# Date: 13 November 2015
+# Runtime: 47.213 seconds
+# Results: 4,068,566,751,420 two-word phrases
+
+require(gtBase)
+
+data = Read(ngrams2)
+result = Sum(Count,data = data)
+View(result
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Data Cleaning (1)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Running any query on the Ngram data shows a large amount of noise, which is an artifact of the OCR technology used by Google as well as the result of the Part-Of-Speech (POS) tagging used for linguistic purposes.</p>
+
+<!-- html table generated in R 3.2.0 by xtable 1.8-0 package -->
+
+<!-- Tue Dec 08 10:31:20 2015 -->
+
+<table border=1>
+<tr> <th>  </th> <th> word </th> <th> sum_count </th>  </tr>
+  <tr> <td align="right"> 1 </td> <td> Nikonowicz_NOUN </td> <td> 18 </td> </tr>
+  <tr> <td align="right"> 2 </td> <td> Ponung </td> <td> 45 </td> </tr>
+  <tr> <td align="right"> 3 </td> <td> tll5 </td> <td> 28 </td> </tr>
+  <tr> <td align="right"> 4 </td> <td> living.65_NOUN </td> <td> 46 </td> </tr>
+  <tr> <td align="right"> 5 </td> <td> 552-3 </td> <td> 168 </td> </tr>
+  <tr> <td align="right"> 6 </td> <td> over.12_PRT </td> <td> 45 </td> </tr>
+  <tr> <td align="right"> 7 </td> <td> Tuttle. </td> <td> 44 </td> </tr>
+  <tr> <td align="right"> 8 </td> <td> donors.8_NOUN </td> <td> 46 </td> </tr>
+  <tr> <td align="right"> 9 </td> <td> Beug </td> <td> 116 </td> </tr>
+  <tr> <td align="right"> 10 </td> <td> 39,916 </td> <td> 83 </td> </tr>
+   </table>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Data Cleaning (2)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>To counter the problems created by this noise, the data was filtered using Grokit&#39;s regular expression parser, <strong>Match</strong>, based on the Onigurama BSD library. The basis for filtering was to remove any non-word items, such as:</p>
+
+<ul>
+<li>Numeric characters</li>
+<li>Punctuation</li>
+<li>POS-tagging</li>
+<li>Items which occured fewer than five times over a given interval</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Data Cleaning (3)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>This method was tested in several ways (will elaborate more in later slides) resulting in the following code and output.</p>
+
+<pre><code class="r">data = Read(ngrams1)[!Match[pattern = &quot;_&quot;](Word1) &amp;&amp; Match[pattern = &quot;[alpha]&quot;](Word1) &amp;&amp; Count &gt;= 5]
+</code></pre>
+
+<!-- html table generated in R 3.2.0 by xtable 1.8-0 package -->
+
+<!-- Tue Dec 08 10:31:24 2015 -->
+
+<table border=1>
+<tr> <th>  </th> <th> rank </th> <th> avg_rwf </th> <th> Word1 </th> <th> year_count </th>  </tr>
+  <tr> <td align="right"> 1 </td> <td align="right">   1 </td> <td align="right"> 0.11 </td> <td> the </td> <td align="right"> 425 </td> </tr>
+  <tr> <td align="right"> 2 </td> <td align="right">   2 </td> <td align="right"> 0.06 </td> <td> and </td> <td align="right"> 425 </td> </tr>
+  <tr> <td align="right"> 3 </td> <td align="right">   3 </td> <td align="right"> 0.03 </td> <td> a </td> <td align="right"> 425 </td> </tr>
+  <tr> <td align="right"> 4 </td> <td align="right">   4 </td> <td align="right"> 0.02 </td> <td> that </td> <td align="right"> 425 </td> </tr>
+  <tr> <td align="right"> 5 </td> <td align="right">   5 </td> <td align="right"> 0.01 </td> <td> as </td> <td align="right"> 425 </td> </tr>
+  <tr> <td align="right"> 6 </td> <td align="right">   6 </td> <td align="right"> 0.01 </td> <td> his </td> <td align="right"> 425 </td> </tr>
+  <tr> <td align="right"> 7 </td> <td align="right">   7 </td> <td align="right"> 0.01 </td> <td> was </td> <td align="right"> 425 </td> </tr>
+  <tr> <td align="right"> 8 </td> <td align="right">   8 </td> <td align="right"> 0.01 </td> <td> with </td> <td align="right"> 425 </td> </tr>
+  <tr> <td align="right"> 9 </td> <td align="right">   9 </td> <td align="right"> 0.01 </td> <td> which </td> <td align="right"> 425 </td> </tr>
+  <tr> <td align="right"> 10 </td> <td align="right">  10 </td> <td align="right"> 0.01 </td> <td> he </td> <td align="right"> 425 </td> </tr>
+   </table>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Language Diversity (1)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>A query to show the increasing number of words in the English language as a function of time</p>
+
+<pre><code class="r">## Show changing volume of words over time with filtering
+
+require(gtBase)
+require(gtStats)
+
+ng1 = Read(ngrams1)[!Match[pattern = &quot;_&quot;](word) &amp;&amp; Match[pattern = &quot;[alpha]&quot;](word) &amp;&amp; nwords &gt;= 10 &amp;&amp; year &gt; 0]
+
+ng2 = GroupBy(
+  ng1,
+  group = year,
+  sum_count_5_min = Count()
+)
+
+View(ng2)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Language Diversity (2)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="C:/Users/Dax/Dropbox/DataProcessing/langdiv1.jpg" style="width:1000px;height1000px"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Language Diversity (3)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>According to a variety of sources, the English language sits at approximately a million unique words, so why is the number so high here?</p>
+
+<ul>
+<li>Proper names are retained</li>
+<li>Alternate spellings, slang</li>
+<li>Not all words are officially recognized as part of the language.</li>
+</ul>
+
+<p><a href="http://www.languagemonitor.com/number-of-words/number-of-words-in-the-english-language-1008879/">How big is the English language?</a></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Language Diversity (4)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Language diversity query adapted to 2grams.</p>
+
+<pre><code class="r">## Show changing volume of words over time with filtering
+
+require(gtBase)
+require(gtStats)
+
+ng1 = Read(ngrams2)[Year &gt; 0]
+
+ng2 = ng1[!Match[pattern = &quot;_&quot;](Word1) &amp;&amp; Match[pattern = &quot;[alpha]&quot;](Word1) &amp;&amp; !Match[pattern = &quot;_&quot;](Word2) &amp;&amp; Match[pattern = &quot;[alpha]&quot;](Word2) &amp;&amp; Count &gt;= 5]
+
+ng3 = GroupBy(
+  ng2,
+  group = Year,
+  sum_count_5_min = Count()
+)
+
+View(ng3)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Language Diversity (5)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="C:/Users/Dax/Dropbox/DataProcessing/langdiv2.jpg" style="width:1000px;height1000px"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Core English (1)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">require(gtBase)
+require(gtStats)
+
+options(show.piggy = TRUE)
+a = Ask(
+  theta = integer(desc=&quot;Inverse of minimum relative frequency&quot;),
+  minyears = integer(desc=&quot;Minimum number of years&quot;)  
+)
+
+minFreq = 1.0/a$theta
+minYears = a$minyears
+
+ng = Read(ngrams1)[!Match[pattern = &quot;_&quot;](word) &amp;&amp; Match[pattern = &quot;[alpha]&quot;](word) &amp;&amp; nwords &gt;= 5]
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Core English (2)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">gl = GroupBy(
+  ng,
+  group = year,
+  sum_count = Sum(nwords)
+)
+
+js1 = Join(Read(ngrams1)[!Match[pattern = &quot;_&quot;](word) &amp;&amp; Match[pattern = &quot;[alpha]&quot;](word) &amp;&amp; nwords &gt;= 5], year, gl, year)[nwords/sum_count &gt;= .(minFreq)]
+
+gl2 = GroupBy(
+  js1,
+  group= c(word),
+  avg_rwf = Mean(nwords/sum_count),
+  year_count = Count()
+)
+
+r1 = gl2[year_count &gt;= .(minYears)]
+
+View(r1)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Core English (3)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="C:/Users/Dax/Dropbox/DataProcessing/coreEnglish1.png" style="width:800px;height800px"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Core English (4)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="C:/Users/Dax/Dropbox/DataProcessing/thecontrast.jpg" style="width:1000px;height1000px"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Core English (5)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="C:/Users/Dax/Dropbox/DataProcessing/coreEnglish2.png" style="width:1000px;height1000px"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>What&#39;s New in the English Language (1)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">#Group by word, get total year count, word-usage count across years
+ng2 = GroupBy(
+  js1,
+  group = word,
+  year_count = Count(),
+  freq_count = Sum(nwords),
+  agg_year_count = Sum(sum_count),
+  rel_agg_freq = Sum(nwords/sum_count)
+)                                                               
+
+#Display words that occured less than 109 years (i.e. &quot;new&quot;, had zero-year) and eliminate low-frequency words.
+ng3 = ng2[year_count &lt; 109 &amp;&amp; freq_count &gt;= 0.00001]
+
+#Sort 
+ng4 = OrderBy(ng3,dsc(freq_count))
+
+
+#View results
+View(ng4)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>What&#39;s New in the English Language (2)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">#Group by word, get total year count, word-usage count across years
+ng2 = GroupBy(
+  js1,
+  group = word,
+  year_count = Count(),
+  freq_count = Sum(nwords),
+  agg_year_count = Sum(sum_count),
+  rel_agg_freq = Sum(nwords/sum_count)
+)                                                               
+
+#Display words that occured less than 109 years (i.e. &quot;new&quot;, had zero-year) and eliminate low-frequency words.
+ng3 = ng2[year_count &lt; 109 &amp;&amp; freq_count &gt;= 0.00001]
+
+#Sort 
+ng4 = OrderBy(ng3,dsc(freq_count))
+
+#View results
+View(ng4)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>What&#39;s New in the English Language (3)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="C:/Users/Dax/Dropbox/DataProcessing/newEnglish1.png" style="width:900px;height900px"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>What&#39;s New in the English Language (4)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="C:/Users/Dax/Dropbox/DataProcessing/newEnglish2.png" style="width:900px;height900px"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Gender Pronouns (1)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">require(gtBase)
+require(gtStats)
+
+ng1 = Read(ngrams1)[!Match[pattern = &quot;_&quot;](word) &amp;&amp; Match[pattern = &quot;[alpha]&quot;](word) &amp;&amp; year &gt;= 1900]
+
+ng2 = ng1[word == &quot;he&quot;|| word == &quot;him&quot; || word == &quot;himself&quot; || word == &quot;his&quot; || word == &quot;she&quot; || word == &quot;her&quot; || word == &quot;herself&quot; || word == &quot;hers&quot;]
+
+ng3 = GroupBy(
+  ng2,
+  group = word,
+  use_count = Sum(nwords)
+)
+
+ng4 = OrderBy(ng3,dsc(use_count))
+
+View(ng4)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Gender Pronouns (2)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>The two smallest slices are &quot;himself&quot; (left) and &quot;herself&quot; (right). Note: &quot;hers&quot; doesn&#39;t even register in the pie chart.</p>
+
+<p><img src="C:/Users/Dax/Dropbox/DataProcessing/gender.jpg" style="width:900px;height900px"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Zipf (1)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">ng = Read(ngrams1)[!Match[pattern = &quot;_&quot;](Word1) &amp;&amp; Match[pattern = &quot;[alpha]&quot;](Word1) &amp;&amp; Count &gt;= 5]
+
+gl = GroupBy(
+    ng,
+    group = Year,
+    sum_count = Sum(Count)
+  )
+
+ng2 = Read(ngrams1)[!Match[pattern = &quot;_&quot;](Word1) &amp;&amp; Match[pattern = &quot;[alpha]&quot;](Word1) &amp;&amp; Count &gt;= 5]
+
+js1 = Join(ng2, Year, gl, Year)[Count/sum_count &gt;= .(minFreq)]
+
+gl2 = GroupBy(
+    js1,
+    group= c(Word1),
+    avg_rwf = Mean(Count/sum_count),
+    year_count = Count()
+  )
+
+results = OrderBy(gl2, dsc(avg_rwf))[year_count &gt;= .(minYears)]
+
+View(results)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Zipf (2)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Unigram Correlation: 0.9943113</p>
+
+<p><img src="C:/Users/Dax/Dropbox/DataProcessing/zipf1.png" style="width:700px;height700px"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Zipf (3)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Bigram Correlation: 0.9247849</p>
+
+<p><img src="C:/Users/Dax/Dropbox/DataProcessing/zipf2.png" style="width:700px;height700px"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Collocations (1)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r"># Query: Collocation2008
+# Author: Dax Gerts
+# Date: 4 November 2015
+# Runtime Without Segmenter: approx. 12.83 minutes (with filter at &gt; 0.000001, one in 100K) approx no convergence (with filter at &gt; 0.0000001, one in 100K)
+# Runtime With Segmenter:    approx. 12.85 minutes (with filter at &gt; 0.000001, one in 100K) approx 14.03 minutes (with filter at &gt; 0.0000001, one in 1M)
+
+# Description: Attempts to identify English collocations in 2008 by comparing the relative frequency of natural occuring bigrams to independently calculated bigrams
+
+library(gtBase)
+library(methods)
+
+# Bigram set
+
+#Read and clean bigram data
+bigramData = Read(ngrams2)[!Match[pattern = &quot;_&quot;](Word1) &amp;&amp; Match[pattern = &quot;[alpha]&quot;](Word1) &amp;&amp; !Match[pattern = &quot;_&quot;](Word2) &amp;&amp; Match[pattern = &quot;[alpha]&quot;](Word2) &amp;&amp; Year == 2008 &amp;&amp; Count &gt;= 5]
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Collocations (2)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">#Group by year to get bigram phrase totals
+bigramGroup &lt;- Segmenter(GroupBy(
+  bigramData,
+  group = c(Year),
+  bigram_sum_count = Sum(Count)
+));
+
+#Join year word totals with original bigram data
+bigramData2 = Read(ngrams2)[!Match[pattern = &quot;_&quot;](Word1) &amp;&amp; Match[pattern = &quot;[alpha]&quot;](Word1) &amp;&amp; !Match[pattern = &quot;_&quot;](Word2) &amp;&amp; Match[pattern = &quot;[alpha]&quot;](Word2) &amp;&amp; Year == 2008 &amp;&amp; Count &gt;= 5]
+bigramJoin = Join(bigramData2, Year, bigramGroup, Year)[Count/bigram_sum_count &gt; 0.0000001]
+
+#Group by word, get relative phrase frequency
+bigramGroup2 = Segmenter(GroupBy(
+  bigramJoin,
+  group = c(Word1, Word2),
+  bigram_rel_freq = Mean(Count/bigram_sum_count)
+));
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Collocations (3)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r"># Word1 set
+
+#Read and clean word1 data
+word1data = Read(ngrams1)[!Match[pattern = &quot;_&quot;](Word1) &amp;&amp; Match[pattern = &quot;[alpha]&quot;](Word1)  &amp;&amp; Year == 2008 &amp;&amp; Count &gt;= 5]
+
+#Group by year to get word 1 totals
+word1Group = Segmenter(GroupBy(
+  word1data, group = Year, word1_sum_count = Sum(Count)
+));
+
+#Join year word totals with original word1 data
+word1Data2 = Read(ngrams1)[!Match[pattern = &quot;_&quot;](Word1) &amp;&amp; Match[pattern = &quot;[alpha]&quot;](Word1)  &amp;&amp; Year == 2008 &amp;&amp; Count &gt;= 5]
+word1Join = Join(word1Data2, Year, word1Group, Year)
+
+#Group by word, get relative word frequency
+word1Group2 = Segmenter(GroupBy(
+  word1Join,
+  group = c(w1 = Word1),
+  word1_rel_freq = Mean(Count/word1_sum_count)
+));
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Collocations (4)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r"># Word2 set
+
+#Read and clean word1 data
+word2data = Read(ngrams1)[!Match[pattern = &quot;_&quot;](Word1) &amp;&amp; Match[pattern = &quot;[alpha]&quot;](Word1)  &amp;&amp; Year == 2008 &amp;&amp; Count &gt;= 5]
+
+#Group by year to get word 2 totals
+word2Group = Segmenter(GroupBy(
+  word2data, group = Year, word2_sum_count = Sum(Count)
+));
+
+#Join year word totals with original word1 data
+word2Data2 = Read(ngrams1)[!Match[pattern = &quot;_&quot;](Word1) &amp;&amp; Match[pattern = &quot;[alpha]&quot;](Word1)  &amp;&amp; Year == 2008 &amp;&amp; Count &gt;= 5]
+word2Join = Join(word2Data2, Year, word2Group, Year)
+
+#Group by word, get relative word frequency
+word2Group2 = Segmenter(GroupBy(
+  word2Join,
+  group = c(w2 = Word1),
+  word2_rel_freq = Mean(Count/word2_sum_count)
+));
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Collocations (5)</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r"># Join tables
+
+#Join onegram data to Word1 of twogram data
+joinWord1 = Join(word1Group2, w1,bigramGroup2, Word1)
+
+#Join onegram data to Word2 of twogram data
+joinWord2 = Join(word2Group2, w2, joinWord1, Word2)
+
+#Calcuate independent frequencies and collocation stats
+collocations = Segmenter(GroupBy(
+  joinWord2,
+  group = c(Word1,Word2),
+  bigram_rel_freq = Sum(bigram_rel_freq + 0.00000),
+  independent_rel_freq = Mean(word1_rel_freq * word2_rel_freq),
+  colloc_stat = Mean(bigram_rel_freq/(word1_rel_freq*word2_rel_freq))
+));
+results = OrderBy(collocations,asc(colloc_stat))
+View(results)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Collocations (6)</h2>
+  </hgroup>
+  <article data-timings="">
+    <!-- html table generated in R 3.2.0 by xtable 1.8-0 package -->
+
+<!-- Tue Dec 08 10:31:26 2015 -->
+
+<table border=1>
+<tr> <th>  </th> <th> colloc_stat </th> <th> Word1 </th> <th> Word2 </th> <th> bigram_rel_freq </th> <th> independent_rel_freq </th>  </tr>
+  <tr> <td align="right"> 1 </td> <td align="right"> 3280379.52 </td> <td> mutatis </td> <td> mutandis </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+  <tr> <td align="right"> 2 </td> <td align="right"> 2644263.55 </td> <td> Fertil </td> <td> Steril </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+  <tr> <td align="right"> 3 </td> <td align="right"> 2020596.85 </td> <td> spina </td> <td> bifida </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+  <tr> <td align="right"> 4 </td> <td align="right"> 1950183.33 </td> <td> Anesth </td> <td> Analg </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+  <tr> <td align="right"> 5 </td> <td align="right"> 1709379.81 </td> <td> Nag </td> <td> Hammadi </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+  <tr> <td align="right"> 6 </td> <td align="right"> 1563349.80 </td> <td> Mardi </td> <td> Gras </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+  <tr> <td align="right"> 7 </td> <td align="right"> 1523877.68 </td> <td> Phnom </td> <td> Penh </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+  <tr> <td align="right"> 8 </td> <td align="right"> 1503741.11 </td> <td> myasthenia </td> <td> gravis </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+  <tr> <td align="right"> 9 </td> <td align="right"> 1444928.14 </td> <td> Martinus </td> <td> Nijhoff </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+  <tr> <td align="right"> 10 </td> <td align="right"> 1411294.78 </td> <td> Helicobacter </td> <td> pylori </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+   </table>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Collocations (7)</h2>
+  </hgroup>
+  <article data-timings="">
+    <!-- html table generated in R 3.2.0 by xtable 1.8-0 package -->
+
+<!-- Tue Dec 08 10:31:27 2015 -->
+
+<table border=1>
+<tr> <th>  </th> <th> colloc_stat </th> <th> Word1 </th> <th> Word2 </th> <th> bigram_rel_freq </th> <th> independent_rel_freq </th>  </tr>
+  <tr> <td align="right"> 99591 </td> <td align="right"> 0.00 </td> <td> the </td> <td> that </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+  <tr> <td align="right"> 99590 </td> <td align="right"> 0.00 </td> <td> the </td> <td> was </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+  <tr> <td align="right"> 99589 </td> <td align="right"> 0.00 </td> <td> the </td> <td> the </td> <td align="right"> 0.00 </td> <td align="right"> 0.01 </td> </tr>
+  <tr> <td align="right"> 99588 </td> <td align="right"> 0.00 </td> <td> a </td> <td> the </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+  <tr> <td align="right"> 99587 </td> <td align="right"> 0.00 </td> <td> the </td> <td> and </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+  <tr> <td align="right"> 99586 </td> <td align="right"> 0.00 </td> <td> his </td> <td> the </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+  <tr> <td align="right"> 99585 </td> <td align="right"> 0.00 </td> <td> the </td> <td> he </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+  <tr> <td align="right"> 99584 </td> <td align="right"> 0.00 </td> <td> a </td> <td> that </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+  <tr> <td align="right"> 99583 </td> <td align="right"> 0.00 </td> <td> and </td> <td> and </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+  <tr> <td align="right"> 99582 </td> <td align="right"> 0.00 </td> <td> the </td> <td> as </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
+   </table>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Future Endeavors</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>String-processing tools
+
+<ul>
+<li>StringSplit</li>
+</ul></li>
+<li>3-, 4-, 5- grams</li>
+<li>Speech Generation</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Google Ngrams Dataset (1)'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Google Ngrams Dataset (2)'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Benchmarking (1)'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Benchmarking (2)'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='Benchmarking (3)'>
+         5
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title='Benchmarking (4)'>
+         6
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=7 title='Data Cleaning (1)'>
+         7
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=8 title='Data Cleaning (2)'>
+         8
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=9 title='Data Cleaning (3)'>
+         9
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=10 title='Language Diversity (1)'>
+         10
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=11 title='Language Diversity (2)'>
+         11
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=12 title='Language Diversity (3)'>
+         12
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=13 title='Language Diversity (4)'>
+         13
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=14 title='Language Diversity (5)'>
+         14
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=15 title='Core English (1)'>
+         15
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=16 title='Core English (2)'>
+         16
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=17 title='Core English (3)'>
+         17
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=18 title='Core English (4)'>
+         18
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=19 title='Core English (5)'>
+         19
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=20 title='What&#39;s New in the English Language (1)'>
+         20
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=21 title='What&#39;s New in the English Language (2)'>
+         21
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=22 title='What&#39;s New in the English Language (3)'>
+         22
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=23 title='What&#39;s New in the English Language (4)'>
+         23
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=24 title='Gender Pronouns (1)'>
+         24
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=25 title='Gender Pronouns (2)'>
+         25
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=26 title='Zipf (1)'>
+         26
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=27 title='Zipf (2)'>
+         27
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=28 title='Zipf (3)'>
+         28
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=29 title='Collocations (1)'>
+         29
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=30 title='Collocations (2)'>
+         30
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=31 title='Collocations (3)'>
+         31
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=32 title='Collocations (4)'>
+         32
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=33 title='Collocations (5)'>
+         33
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=34 title='Collocations (6)'>
+         34
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=35 title='Collocations (7)'>
+         35
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=36 title='Future Endeavors'>
+         36
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
